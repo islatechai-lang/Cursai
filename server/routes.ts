@@ -204,6 +204,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Claim welcome bonus credit (1 free credit for new users)
+  app.post("/api/credits/claim-welcome", async (req, res) => {
+    try {
+      let userId = "dev_user";
+
+      if (isWhopEnabled) {
+        const user = await verifyWhopToken(req);
+        if (!user) {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
+        userId = user.userId;
+      }
+
+      // Check if user already claimed welcome bonus
+      const userDoc = await UserModel.findOne({ id: userId });
+      if (userDoc?.welcomeBonusClaimed) {
+        return res.json({ success: false, message: "Welcome bonus already claimed", credits: userDoc.credits });
+      }
+
+      // Grant 1 free credit and mark bonus as claimed
+      const newCredits = (userDoc?.credits || 0) + 1;
+      await UserModel.findOneAndUpdate(
+        { id: userId },
+        {
+          $set: {
+            credits: newCredits,
+            welcomeBonusClaimed: true,
+            updatedAt: new Date()
+          }
+        },
+        { upsert: true }
+      );
+
+      console.log(`[Welcome Bonus] ✅ Granted 1 free credit to user ${userId}`);
+      return res.json({ success: true, credits: newCredits });
+    } catch (error) {
+      console.error("Error claiming welcome bonus:", error);
+      return res.status(500).json({ error: "Failed to claim welcome bonus" });
+    }
+  });
+
   app.get("/api/credits", async (req, res) => {
     try {
       let userId = "dev_user";
@@ -219,7 +260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userCredits = await storage.getUserCredits(userId);
 
       if (!userCredits) {
-        await storage.setUserCredits(userId, 3); // Default to 3 free credits
+        await storage.setUserCredits(userId, 0); // Default to 0 credits - user claims 1 free via welcome bonus
         userCredits = await storage.getUserCredits(userId);
       }
 
@@ -291,7 +332,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                     $set: {
                       subscriptionPlan: null,
                       currentPeriodStart: null,
-                      credits: Math.min(userDoc.credits, 3), // Cap credits at 3 when subscription drops
+                      credits: Math.min(userDoc.credits, 1), // Cap credits at 1 when subscription drops
                       updatedAt: new Date()
                     }
                   }
@@ -2348,7 +2389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userCredits = await storage.getUserCredits(userId);
 
       if (!userCredits) {
-        await storage.setUserCredits(userId, 1);
+        await storage.setUserCredits(userId, 0); // Initialize with 0, claim 1 free via welcome bonus
         userCredits = await storage.getUserCredits(userId);
       }
 

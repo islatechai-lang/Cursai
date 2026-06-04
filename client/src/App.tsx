@@ -10,6 +10,7 @@ import WebhookTester from "@/pages/WebhookTester";
 import { whopIframeSdk } from "./lib/whop-iframe";
 import { useEffect, useState } from "react";
 import UpgradeAnnouncementModal from "@/components/UpgradeAnnouncementModal";
+import WelcomeBonusModal from "@/components/WelcomeBonusModal";
 
 function AdminRedirect() {
   const [, setLocation] = useLocation();
@@ -172,6 +173,7 @@ function App() {
           </div>
           <Toaster />
           <UpgradeAnnouncementModal />
+          <WelcomeBonusModal />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
