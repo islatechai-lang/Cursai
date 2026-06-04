@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Gift, Sparkles, BarChart3, Shield, ChevronRight } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const WELCOME_KEY = "cursai_welcome_bonus_claimed";
 const UPGRADE_KEY = "cursai_upgrade_v3.1_seen";
@@ -16,6 +17,7 @@ export default function WelcomeBonusModal() {
     const [open, setOpen] = useState(false);
     const [claiming, setClaiming] = useState(false);
     const [claimed, setClaimed] = useState(false);
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         const alreadyClaimed = localStorage.getItem(WELCOME_KEY);
@@ -59,6 +61,7 @@ export default function WelcomeBonusModal() {
             if (response.ok) {
                 setClaimed(true);
                 localStorage.setItem(WELCOME_KEY, "true");
+                queryClient.invalidateQueries({ queryKey: ["/api/credits"] });
                 // Close after a brief celebration
                 setTimeout(() => setOpen(false), 2000);
             }
