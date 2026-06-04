@@ -236,7 +236,6 @@ function calculateValidatedConfidence(
     rejectionReason: `Confidence below minimum threshold (${baseConfidence}% < 50%)`,
   };
 }
-}
 
 function normalizeTradeTargets(
   maybeTargets: unknown,
