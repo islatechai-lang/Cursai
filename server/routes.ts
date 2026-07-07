@@ -734,8 +734,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // ================================================================
       const isBasic = planId === "plan_mndBT74OUdiNB";
-      const SUBSCRIPTION_PRICE_CENTS = isBasic ? 2000 : 1000;   // Basic is $20.00, Starter is $10.00
-      const COMMISSION_CENTS = isBasic ? 1000 : 500;           // 50% commission
+      const SUBSCRIPTION_PRICE_CENTS = isBasic ? 500 : 1000;   // Basic is $5.00, Starter is $10.00
+      const COMMISSION_CENTS = isBasic ? 250 : 500;           // 50% commission
 
       const markerAdminId = admin?.userId || "system_no_admin";
       const markerCommissionId = `comm_${payment.id}_${markerAdminId}`;
@@ -2086,13 +2086,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // ================================================================
         // PRICING ENFORCEMENT
         // ================================================================
-        // Basic Plan: $20.00 = 2000 cents (50% Commission = $10.00 = 1000 cents)
+        // Basic Plan: $5.00 = 500 cents (50% Commission = $2.50 = 250 cents)
         // Starter Plan: $10.00 = 1000 cents (50% Commission = $5.00 = 500 cents)
         // ================================================================
         const targetPlanId = payment.plan?.id || payment.membership?.plan?.id || "plan_mndBT74OUdiNB";
         const isBasic = targetPlanId === "plan_mndBT74OUdiNB";
-        const SUBSCRIPTION_PRICE_CENTS = isBasic ? 2000 : 1000;
-        const COMMISSION_CENTS = isBasic ? 1000 : 500;
+        const SUBSCRIPTION_PRICE_CENTS = isBasic ? 500 : 1000;
+        const COMMISSION_CENTS = isBasic ? 250 : 500;
 
         // Read incoming payment amount for logging only - DO NOT USE for commission calculation
         const incomingPaymentAmount = (payment as any).final_amount || (payment as any).subtotal || (payment as any).amount || 0;

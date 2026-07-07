@@ -82,8 +82,8 @@ export function PricingModal({
     {
       id: "plan_mndBT74OUdiNB",
       name: "Basic Access",
-      price: "$20",
-      period: "month",
+      price: "$5",
+      period: "week",
       analysesLimit: "50 analyses",
       description: "For active traders seeking detailed predictions daily.",
       features: [
