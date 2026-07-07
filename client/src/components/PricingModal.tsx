@@ -84,10 +84,10 @@ export function PricingModal({
       name: "Basic Access",
       price: "$5",
       period: "week",
-      analysesLimit: "50 analyses",
+      analysesLimit: "10 analyses / week",
       description: "For active traders seeking detailed predictions daily.",
       features: [
-        "50 AI Market Analyses / mo",
+        "10 AI Market Analyses / week",
         "Full transparent reasoning access",
         "Higher accuracy Gemini calculations",
         "Prioritized real-time predictions",

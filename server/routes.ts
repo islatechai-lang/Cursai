@@ -287,7 +287,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               // Only process Cursai subscription plan limits
               if (planId === "plan_mndBT74OUdiNB" || planId === "plan_ZLLdnJssCPIpY") {
-                const planLimit = planId === "plan_mndBT74OUdiNB" ? 50 : 20;
+                const planLimit = planId === "plan_mndBT74OUdiNB" ? 10 : 20;
                 
                 // Get the start date of the current billing cycle
                 const renewalPeriodStart = activeMembership.renewal_period_start 
@@ -651,7 +651,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // STEP 5: Grant subscription credits to customer
       // ================================================================
       try {
-        const planLimit = planId === "plan_mndBT74OUdiNB" ? 50 : 20;
+        const planLimit = planId === "plan_mndBT74OUdiNB" ? 10 : 20;
 
         await UserModel.findOneAndUpdate(
           { id: customerUserId },
@@ -795,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (success) {
         // Grant subscription for dev mode testing
         const targetPlan = planId || "plan_mndBT74OUdiNB";
-        const planLimit = targetPlan === "plan_mndBT74OUdiNB" ? 50 : 20;
+        const planLimit = targetPlan === "plan_mndBT74OUdiNB" ? 10 : 20;
         await UserModel.findOneAndUpdate(
           { id: userId },
           {
@@ -1953,7 +1953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // ================================================================
         try {
           const planId = payment.plan?.id || payment.membership?.plan?.id || "plan_mndBT74OUdiNB";
-          const planLimit = planId === "plan_mndBT74OUdiNB" ? 50 : 20;
+          const planLimit = planId === "plan_mndBT74OUdiNB" ? 10 : 20;
 
           await UserModel.findOneAndUpdate(
             { id: customerUserId },
