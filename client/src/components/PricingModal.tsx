@@ -105,7 +105,7 @@ export function PricingModal({
         <div className="h-1 w-full gradient-primary" />
 
         <div className="p-6 md:p-8">
-          <DialogHeader className="mb-6 text-center">
+          <DialogHeader className="mb-6 text-center sm:text-center">
             <DialogTitle className="text-2xl md:text-3xl font-extrabold tracking-tight">
               Upgrade Your Analysis Limits
             </DialogTitle>
