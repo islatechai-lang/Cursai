@@ -13,7 +13,6 @@ import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Link } from "wouter";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState } from "react";
 
 interface AdminBalance {
@@ -255,7 +254,6 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-            <ThemeToggle />
             <Link href="/">
               <span className="text-xs md:text-sm text-muted-foreground hover-elevate cursor-pointer transition-colors hidden sm:inline" data-testid="link-act-as-member">
                 Act as a Member

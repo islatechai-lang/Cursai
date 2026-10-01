@@ -43,8 +43,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
                         {this.state.error && (
                             <div className="mb-4">
-                                <h2 className="text-sm font-semibold text-neutral-300 mb-1">Error:</h2>
-                                <pre className="bg-black/50 p-3 rounded text-red-300 text-xs overflow-auto max-h-40 border border-red-500/20">
+                                <h2 className="text-sm font-semibold text-foreground/80 mb-1">Error:</h2>
+                                <pre className="bg-muted/60 dark:bg-black/50 p-3 rounded text-red-500 dark:text-red-300 text-xs overflow-auto max-h-40 border border-red-500/20">
                                     {this.state.error.toString()}
                                 </pre>
                             </div>
@@ -52,8 +52,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
                         {this.state.errorInfo && (
                             <div>
-                                <h2 className="text-sm font-semibold text-neutral-300 mb-1">Stack Trace:</h2>
-                                <pre className="bg-black/50 p-3 rounded text-neutral-500 text-xs overflow-auto max-h-60 border border-white/10">
+                                <h2 className="text-sm font-semibold text-foreground/80 mb-1">Stack Trace:</h2>
+                                <pre className="bg-muted/60 dark:bg-black/50 p-3 rounded text-muted-foreground text-xs overflow-auto max-h-60 border border-border/50 dark:border-white/10">
                                     {this.state.errorInfo.componentStack}
                                 </pre>
                             </div>
@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
                         <button
                             onClick={() => window.location.reload()}
-                            className="mt-6 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded transition-colors text-sm font-medium"
+                            className="mt-6 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded transition-colors text-sm font-medium"
                         >
                             Reload Page
                         </button>

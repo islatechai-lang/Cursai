@@ -314,7 +314,7 @@ function TechnicalIndicatorsDisplay({
               {categoryIndicators.map((indicator, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-lg bg-black/20 border border-white/5 backdrop-blur-sm hover:border-primary/20 transition-all group"
+                  className="p-3 rounded-lg bg-card/60 dark:bg-black/20 border border-border/50 dark:border-white/5 backdrop-blur-sm hover:border-primary/30 transition-all group"
                   data-testid={`indicator - ${indicator.name.toLowerCase().replace(/\s+/g, "-")} `}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -326,7 +326,7 @@ function TechnicalIndicatorsDisplay({
                           <TooltipTrigger>
                             <HelpCircle className="w-3 h-3 text-muted-foreground/30 hover:text-primary transition-colors cursor-help" />
                           </TooltipTrigger>
-                          <TooltipContent className="bg-black/90 border-primary/20 text-xs max-w-[200px]">
+                          <TooltipContent className="bg-popover text-popover-foreground border-border text-xs max-w-[200px]">
                             {indicator.description}
                           </TooltipContent>
                         </Tooltip>
@@ -347,7 +347,7 @@ function TechnicalIndicatorsDisplay({
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-1.5 bg-muted/20 rounded-full overflow-hidden flex relative">
                       {/* Center marker for neutral */}
-                      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10" />
+                      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border dark:bg-white/10" />
 
                       {/* Simulated value bar */}
                       {indicator.name.includes("RSI") || indicator.name.includes("MFI") || indicator.name.includes("ADX") ? (
@@ -587,10 +587,10 @@ function FinalVerdictDisplay({
                 <TooltipTrigger>
                   <HelpCircle className="w-3 h-3 text-muted-foreground/50 ml-1 inline-block" />
                 </TooltipTrigger>
-                <TooltipContent className="bg-black/95 border-white/10 text-xs p-3 space-y-1 z-50">
+                <TooltipContent className="bg-popover text-popover-foreground border-border text-xs p-3 space-y-1 z-50">
                   <p className="font-semibold text-primary mb-1">Confidence Scale:</p>
-                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">80-85%:</span> <span className="text-white/90">Moderate</span></div>
-                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">86-92%:</span> <span className="text-white/90">Strong</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">80-85%:</span> <span className="text-foreground/90 font-medium">Moderate</span></div>
+                  <div className="flex justify-between gap-4"><span className="text-muted-foreground">86-92%:</span> <span className="text-foreground/90 font-medium">Strong</span></div>
                   <div className="flex justify-between gap-4"><span className="text-muted-foreground">93-99%:</span> <span className="text-emerald-400 font-bold">Exceptional</span></div>
                 </TooltipContent>
               </Tooltip>

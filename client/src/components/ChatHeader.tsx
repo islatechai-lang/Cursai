@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useParams } from "wouter";
-import { ThemeToggle } from "./ThemeToggle";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { MemberSidebar } from "./MemberSidebar";
@@ -147,7 +146,6 @@ export function ChatHeader({ onNewSession, onSessionSelect }: ChatHeaderProps) {
               </Button>
             </Link>
           )}
-          <ThemeToggle />
           {!creditsLoading && credits && (
             <div className="flex items-center gap-1 md:gap-2">
               <Badge variant="secondary" className="text-xs px-2" data-testid="badge-credits">

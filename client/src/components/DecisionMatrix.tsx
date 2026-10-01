@@ -142,7 +142,7 @@ export function DecisionMatrix({ checks, score }: DecisionMatrixProps) {
                                         </Badge>
                                     </div>
                                 </TooltipTrigger>
-                                <TooltipContent side="top" className="bg-black/90 border-primary/20 p-3 max-w-[250px] space-y-1">
+                                <TooltipContent side="top" className="bg-popover text-popover-foreground border-border p-3 max-w-[250px] space-y-1">
                                     <div className="flex justify-between items-center text-xs font-bold text-primary mb-1">
                                         <span>Status: {check.status}</span>
                                         <span className={check.status.toLowerCase() === "pass" ? "text-emerald-400" : "text-red-400"}>

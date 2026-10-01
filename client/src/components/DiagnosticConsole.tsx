@@ -47,7 +47,7 @@ export function DiagnosticConsole({ logs }: DiagnosticConsoleProps) {
     return (
         <div className="w-full space-y-4 font-mono text-sm">
             {/* HUD Header */}
-            <div className="flex flex-wrap items-center justify-between gap-4 p-3 rounded-lg bg-black/40 border border-primary/20 backdrop-blur-md">
+            <div className="flex flex-wrap items-center justify-between gap-4 p-3 rounded-lg bg-card/70 dark:bg-black/40 border border-primary/20 backdrop-blur-md">
                 <div className="flex items-center gap-3">
                     <div className="relative">
                         <Terminal className="w-5 h-5 text-primary animate-pulse" />
@@ -73,7 +73,7 @@ export function DiagnosticConsole({ logs }: DiagnosticConsoleProps) {
             </div>
 
             {/* Main Terminal Window */}
-            <div className="relative rounded-xl overflow-hidden border border-primary/30 bg-black/80 shadow-[0_0_30px_-10px_rgba(var(--primary),0.3)]">
+            <div className="relative rounded-xl overflow-hidden border border-primary/30 bg-card/90 dark:bg-black/80 shadow-[0_0_30px_-10px_rgba(var(--primary),0.3)]">
                 {/* Scanlines effect overlay */}
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]" />
 
@@ -86,7 +86,7 @@ export function DiagnosticConsole({ logs }: DiagnosticConsoleProps) {
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.2 }}
-                                    className="flex items-start gap-3 hover:bg-white/5 p-1 rounded transition-colors"
+                                    className="flex items-start gap-3 hover:bg-muted/50 dark:hover:bg-white/5 p-1 rounded transition-colors"
                                 >
                                     <span className="text-muted-foreground min-w-[80px] font-mono">[{log.timestamp}]</span>
                                     <span className="text-primary/70 mx-2">&gt;</span>
@@ -98,7 +98,7 @@ export function DiagnosticConsole({ logs }: DiagnosticConsoleProps) {
                                             } uppercase mr-2`}>
                                             {log.status === "SUCCESS" || log.status === "success" ? "" : log.action}
                                         </span>
-                                        <span className="text-gray-300 uppercase">{log.details || log.message}</span>
+                                        <span className="text-foreground/90 uppercase">{log.details || log.message}</span>
                                     </div>
 
                                     {log.latency && (

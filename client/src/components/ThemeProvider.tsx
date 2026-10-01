@@ -1,62 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
-const MANUAL_THEME_KEY = "manual-theme-preference";
-
-function getManualThemePreference(): "light" | "dark" | null {
-  try {
-    const stored = localStorage.getItem(MANUAL_THEME_KEY);
-    if (stored === 'light' || stored === 'dark') {
-      return stored;
-    }
-  } catch (e) {
-    console.error("Failed to read manual theme preference:", e);
-  }
-  return null;
-}
-
-function setManualThemePreference(theme: "light" | "dark" | null) {
-  try {
-    if (theme === null) {
-      localStorage.removeItem(MANUAL_THEME_KEY);
-    } else {
-      localStorage.setItem(MANUAL_THEME_KEY, theme);
-    }
-  } catch (e) {
-    console.error("Failed to save manual theme preference:", e);
-  }
-}
-
-function getWhopThemePreference(): "light" | "dark" | null {
-  const cookies = document.cookie.split(';');
-  const themeCookie = cookies.find(cookie => cookie.trim().startsWith('whop-frosted-theme='));
-  
-  if (themeCookie) {
-    const theme = themeCookie.split('=')[1].trim();
-    return theme === 'light' ? 'light' : theme === 'dark' ? 'dark' : null;
-  }
-  
-  return null;
-}
+import { getWhopTheme, onWhopThemeChange } from "@/lib/whop-iframe";
 
 function getSystemPreference(): "light" | "dark" {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function determineTheme(): "light" | "dark" {
-  const manualTheme = getManualThemePreference();
-  if (manualTheme) return manualTheme;
-  
-  const whopTheme = getWhopThemePreference();
-  if (whopTheme) return whopTheme;
-  
-  return getSystemPreference();
+  if (typeof window === "undefined") return "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 interface ThemeContextType {
   theme: "light" | "dark";
-  toggleTheme: () => void;
-  resetToAuto: () => void;
-  isManual: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -70,64 +21,51 @@ export function useTheme() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<"light" | "dark">(() => determineTheme());
-  const [isManual, setIsManual] = useState<boolean>(() => getManualThemePreference() !== null);
+  const [theme, setTheme] = useState<"light" | "dark">(() => getSystemPreference());
 
   useEffect(() => {
-    const checkTheme = () => {
-      const newTheme = determineTheme();
-      const newIsManual = getManualThemePreference() !== null;
-      
-      if (newTheme !== theme) {
-        setTheme(newTheme);
+    let isWhopControlled = false;
+
+    // 1. Fetch initial theme from Whop iframe SDK
+    getWhopTheme().then((whopTheme) => {
+      if (whopTheme) {
+        isWhopControlled = true;
+        setTheme(whopTheme);
       }
-      if (newIsManual !== isManual) {
-        setIsManual(newIsManual);
+    });
+
+    // 2. Listen to real-time theme changes from Whop
+    const unsubscribeWhop = onWhopThemeChange((newTheme) => {
+      isWhopControlled = true;
+      setTheme(newTheme);
+    });
+
+    // 3. Listen to system preference changes as fallback outside Whop
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      if (!isWhopControlled) {
+        setTheme(e.matches ? "dark" : "light");
       }
     };
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      if (!getManualThemePreference()) {
-        checkTheme();
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    const intervalId = setInterval(checkTheme, 1000);
+    mediaQuery.addEventListener("change", handleSystemChange);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-      clearInterval(intervalId);
+      unsubscribeWhop();
+      mediaQuery.removeEventListener("change", handleSystemChange);
     };
-  }, [theme, isManual]);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    
-    if (theme === 'dark') {
-      root.classList.add('dark');
+    if (theme === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
   }, [theme]);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setManualThemePreference(newTheme);
-    setTheme(newTheme);
-    setIsManual(true);
-  };
-
-  const resetToAuto = () => {
-    setManualThemePreference(null);
-    setIsManual(false);
-    const autoTheme = getWhopThemePreference() || getSystemPreference();
-    setTheme(autoTheme);
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, resetToAuto, isManual }}>
+    <ThemeContext.Provider value={{ theme }}>
       {children}
     </ThemeContext.Provider>
   );

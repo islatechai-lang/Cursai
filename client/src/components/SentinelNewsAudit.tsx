@@ -139,7 +139,7 @@ export function SentinelNewsAudit({ headlines, isScanning }: SentinelNewsAuditPr
 
                         {/* Main Headlines List */}
                         <div className="md:col-span-2">
-                            <ScrollArea className="h-60 rounded-lg border border-border/50 bg-black/20 pr-4">
+                            <ScrollArea className="h-60 rounded-lg border border-border/50 bg-muted/40 dark:bg-black/20 pr-4">
                                 <div className="space-y-2 p-2">
                                     <AnimatePresence>
                                         {isScanning ? (
