@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getWhopTheme, onWhopThemeChange } from "@/lib/whop-iframe";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { getWhopTheme, onWhopThemeChange, isWhopIframeEnabled } from "@/lib/whop-iframe";
 
 function getSystemPreference(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
@@ -22,28 +22,43 @@ export function useTheme() {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<"light" | "dark">(() => getSystemPreference());
+  const themeRef = useRef(theme);
+
+  // Keep ref in sync so the polling interval can read latest without re-creating
+  useEffect(() => {
+    themeRef.current = theme;
+  }, [theme]);
 
   useEffect(() => {
-    let isWhopControlled = false;
-
     // 1. Fetch initial theme from Whop iframe SDK
     getWhopTheme().then((whopTheme) => {
       if (whopTheme) {
-        isWhopControlled = true;
         setTheme(whopTheme);
       }
     });
 
-    // 2. Listen to real-time theme changes from Whop
+    // 2. Listen to real-time theme changes from Whop via onMessage
     const unsubscribeWhop = onWhopThemeChange((newTheme) => {
-      isWhopControlled = true;
       setTheme(newTheme);
     });
 
-    // 3. Listen to system preference changes as fallback outside Whop
+    // 3. Poll getColorTheme() every 1s as a reliable fallback
+    //    The onMessage event may not fire in all Whop environments,
+    //    so this ensures theme stays synced regardless.
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+    if (isWhopIframeEnabled) {
+      pollInterval = setInterval(async () => {
+        const polledTheme = await getWhopTheme();
+        if (polledTheme && polledTheme !== themeRef.current) {
+          setTheme(polledTheme);
+        }
+      }, 1000);
+    }
+
+    // 4. Listen to OS preference changes as fallback when outside Whop
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleSystemChange = (e: MediaQueryListEvent) => {
-      if (!isWhopControlled) {
+      if (!isWhopIframeEnabled) {
         setTheme(e.matches ? "dark" : "light");
       }
     };
@@ -51,6 +66,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       unsubscribeWhop();
+      if (pollInterval) clearInterval(pollInterval);
       mediaQuery.removeEventListener("change", handleSystemChange);
     };
   }, []);
